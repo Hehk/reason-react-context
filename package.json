@@ -4,14 +4,22 @@
   "scripts": {
     "build": "bsb -make-world",
     "start": "bsb -make-world -w",
-    "clean": "bsb -clean-world"
+    "clean": "bsb -clean-world",
+    "test": "jest",
+    "precommit": "lint-staged"
   },
-  "keywords": [
-    "BuckleScript"
-  ],
+  "lint-staged": {
+    "*.{re,rei}": ["refmt --in-place", "git add"],
+    "*.{js,json,md}": ["prettier --write", "git add"]
+  },
+  "keywords": ["BuckleScript"],
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "bs-platform": "^2.1.0"
+    "@glennsl/bs-jest": "^0.4.2",
+    "bs-platform": "^2.1.0",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.0.0",
+    "prettier": "^1.10.2"
   }
 }
