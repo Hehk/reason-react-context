@@ -13,7 +13,7 @@
     "in-source": true
   },
   "suffix": ".bs.js",
-  "bs-dependencies": [],
+  "bs-dependencies": ["reason-react"],
   "bs-dev-dependencies": ["@glennsl/bs-jest"],
   "namespace": true,
   "refmt": 3

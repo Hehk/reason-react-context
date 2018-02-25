@@ -6,7 +6,7 @@
     "start": "bsb -make-world -w",
     "clean": "bsb -clean-world",
     "test": "jest",
-    "precommit": "lint-staged"
+    "precommit": "bsb -clean-world -make-world && lint-staged"
   },
   "lint-staged": {
     "*.{re,rei}": ["refmt --in-place", "git add"],
@@ -21,5 +21,8 @@
     "husky": "^0.14.3",
     "lint-staged": "^7.0.0",
     "prettier": "^1.10.2"
+  },
+  "dependencies": {
+    "reason-react": "^0.3.2"
   }
 }
