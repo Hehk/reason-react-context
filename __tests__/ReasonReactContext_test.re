@@ -15,36 +15,36 @@ describe("Creating and updating", () => {
       }
     );
   test("Provider renders", () =>
-    <Context.Provider /> |> Enzyme.shallow |> Enzyme.exists |> expect |> toBe(true)
+    <Context.Provider />
+    |> Enzyme.shallow
+    |> Enzyme.exists
+    |> expect
+    |> toBe(true)
   );
-  test("Consumer renders", () => {
-    let x = ref(-1);
-    let _ =
-      <Context.Consumer>
-        ...(
-             ({count}) => {
-               x := count;
-               ReasonReact.stringToElement("test");
-             }
-           )
-      </Context.Consumer>
-      |> Enzyme.shallow;
-    x^ |> expect |> toBe(0);
-  });
+  let consumerCount = ref(-1);
+  let consumer =
+    <Context.Consumer>
+      ...(
+           ({count}) => {
+             consumerCount := count;
+             ReasonReact.stringToElement("test");
+           }
+         )
+    </Context.Consumer>
+    |> Enzyme.shallow;
+  test("Consumer renders", () =>
+    consumerCount^ |> expect |> toBe(0)
+  );
   test("Change count on provider and it is mirrored in consumer", () => {
-    let x = ref(-1);
     let newValue = 10;
     let _ = <Context.Provider value={count: newValue} /> |> Enzyme.shallow;
-    let _ =
-      <Context.Consumer>
-        ...(
-             ({count}) => {
-               x := count;
-               ReasonReact.stringToElement("test");
-             }
-           )
-      </Context.Consumer>
-      |> Enzyme.shallow;
-    x^ |> expect |> toBe(newValue);
+    consumerCount^ |> expect |> toBe(newValue);
+  });
+  test("context subscription count should only be 1", () =>
+    Context.subscriptions^ |> List.length |> expect |> toBe(1)
+  );
+  test("Consumer unmounts and the context clears the subscription", () => {
+    let _ = consumer |> Enzyme.unmount;
+    Context.subscriptions^ |> List.length |> expect |> toBe(0);
   });
 });
