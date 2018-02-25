@@ -14,18 +14,10 @@
     }
   },
   "lint-staged": {
-    "*.{re,rei}": [
-      "refmt --in-place",
-      "git add"
-    ],
-    "*.{js,json,md}": [
-      "prettier --write",
-      "git add"
-    ]
+    "*.{re,rei}": ["refmt --in-place", "git add"],
+    "*.{js,json,md}": ["prettier --write", "git add"]
   },
-  "keywords": [
-    "BuckleScript"
-  ],
+  "keywords": ["BuckleScript"],
   "author": "",
   "license": "MIT",
   "devDependencies": {
@@ -33,7 +25,7 @@
     "bs-enzyme": "^0.3.1",
     "bs-platform": "^2.1.0",
     "enzyme-adapter-react-16": "^1.1.1",
-    "husky": "^0.14.3",
+    "husky": "^0.15.0-rc.8",
     "lint-staged": "^7.0.0",
     "prettier": "^1.10.2"
   },
