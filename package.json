@@ -5,19 +5,34 @@
     "build": "bsb -make-world",
     "start": "bsb -make-world -w",
     "clean": "bsb -clean-world",
-    "test": "jest",
-    "precommit": "bsb -clean-world -make-world && lint-staged"
+    "test": "jest"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "bsb -clean-world -make-world && lint-staged",
+      "pre-push": "npm test"
+    }
   },
   "lint-staged": {
-    "*.{re,rei}": ["refmt --in-place", "git add"],
-    "*.{js,json,md}": ["prettier --write", "git add"]
+    "*.{re,rei}": [
+      "refmt --in-place",
+      "git add"
+    ],
+    "*.{js,json,md}": [
+      "prettier --write",
+      "git add"
+    ]
   },
-  "keywords": ["BuckleScript"],
+  "keywords": [
+    "BuckleScript"
+  ],
   "author": "",
   "license": "MIT",
   "devDependencies": {
     "@glennsl/bs-jest": "^0.4.2",
+    "bs-enzyme": "^0.3.1",
     "bs-platform": "^2.1.0",
+    "enzyme-adapter-react-16": "^1.1.1",
     "husky": "^0.14.3",
     "lint-staged": "^7.0.0",
     "prettier": "^1.10.2"

@@ -19,8 +19,7 @@ module CreateContext = (C: Config) => {
     List.iter(f => f(newState), subscriptions^);
   };
   module Provider = {
-    let component =
-      ReasonReact.statelessComponent(C.name ++ "ContextProvider");
+    let component = ReasonReact.statelessComponent(C.name ++ "ContextProvider");
     let make = (~value=?, children) => {
       ...component,
       willReceiveProps: _self => updateState(value),
@@ -28,8 +27,7 @@ module CreateContext = (C: Config) => {
         updateState(value);
         ReasonReact.NoUpdate;
       },
-      render: _self =>
-        ReasonReact.createDomElement("div", ~props=Js.Obj.empty(), children)
+      render: _self => ReasonReact.createDomElement("div", ~props=Js.Obj.empty(), children)
     };
   };
   module Consumer = {
@@ -42,10 +40,7 @@ module CreateContext = (C: Config) => {
         | ChangeState(newState) => ReasonReact.Update(newState)
         },
       subscriptions: ({send}) => [
-        Sub(
-          () => addSubscription(newState => send(ChangeState(newState))),
-          unSub => unSub()
-        )
+        Sub(() => addSubscription(newState => send(ChangeState(newState))), unSub => unSub())
       ],
       render: ({state}) => children(state)
     };
