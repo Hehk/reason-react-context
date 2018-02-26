@@ -15,7 +15,6 @@
   "suffix": ".bs.js",
   "bs-dependencies": ["reason-react"],
   "bs-dev-dependencies": ["bs-enzyme", "@glennsl/bs-jest"],
-  "namespace": true,
   "refmt": 3,
   "reason": {
     "react-jsx": 2
