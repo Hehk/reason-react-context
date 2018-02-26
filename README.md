@@ -1,18 +1,84 @@
-# Basic Reason Template
+This a an implementation of the new context react context api in pure ReasonML
 
-Hello! This project allows you to quickly get started with Reason and BuckleScript. If you wanted a more sophisticated version, try the `react` template (`bsb -theme react -init .`).
+# State
 
-# Build
-```
-npm run build
-```
+It seems to cover the base api. If there is something missing, please file an issue :D
 
-# Build + Watch
+# Install
 
 ```
-npm run watch
+npm install --save reason-react-context
 ```
 
+# Example
 
-# Editor
-If you use `vscode`, Press `Windows + Shift + B` it will build automatically
+An example of using this is at https://github.com/Hehk/example-reason-react-context
+
+Creating a context:
+
+```re
+type t =
+  | Light
+  | Dark;
+
+module Context =
+  ReasonReactContext.CreateContext(
+    {
+      type state = t;
+      let name = "Theme";
+      let defaultValue = Light;
+    }
+  );
+```
+
+Using the Provider module:
+
+```re
+type action =
+  | ChangeTheme(Theme.t);
+
+type state = {theme: Theme.t};
+
+let component = ReasonReact.reducerComponent("App");
+
+let make = _children => {
+  ...component,
+  initialState: () => {theme: Light},
+  reducer: (action, _state) =>
+    switch action {
+    | ChangeTheme(newTheme) => ReasonReact.Update({theme: newTheme})
+    },
+  render: ({send, state}) =>
+    <div className="App">
+      <Theme.Context.Provider value=state.theme>
+        <Background>
+          <button onClick=(_e => send(ChangeTheme(state.theme === Dark ? Light : Dark)))>
+            (ReasonReact.stringToElement("Toggle Theme"))
+          </button>
+          <Title message="Reason Context" />
+        </Background>
+      </Theme.Context.Provider>
+    </div>
+};
+```
+
+Using the Consumer module:
+
+```re
+let component = ReasonReact.statelessComponent("background");
+
+let make = children => {
+  ...component,
+  render: _self =>
+    <Theme.Context.Consumer>
+      ...(
+           theme =>
+             ReasonReact.createDomElement(
+               "div",
+               ~props={"className": theme === Light ? "background-light" : "background-dark"},
+               children
+             )
+         )
+    </Theme.Context.Consumer>
+};
+```

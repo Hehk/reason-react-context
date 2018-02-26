@@ -7,13 +7,13 @@ var Curry = require("bs-platform/lib/js/curry.js");
 var Enzyme = require("bs-enzyme/src/Enzyme.js");
 var Enzyme$1 = require("enzyme");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
+var ReasonReactContext = require("../src/reasonReactContext.bs.js");
 var EnzymeAdapterReact = require("enzyme-adapter-react-16");
-var ReasonReactContext$ReasonReactContext = require("../src/reasonReactContext.bs.js");
 
 Enzyme.configureEnzyme(new EnzymeAdapterReact());
 
 describe("Creating and updating", function() {
-  var Context = ReasonReactContext$ReasonReactContext.CreateContext(
+  var Context = ReasonReactContext.CreateContext(
     /* module */ [
       /* name */ "Counter",
       /* defaultValue : record */ [/* count */ 0]
