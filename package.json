@@ -17,8 +17,13 @@
     "*.{re,rei}": ["refmt --in-place", "git add"],
     "*.{js,json,md}": ["prettier --write", "git add"]
   },
-  "keywords": ["BuckleScript"],
-  "author": "",
+  "keywords": ["BuckleScript", "react", "reasonml"],
+  "author": "Kyle Henderson <kyle1101000@gmail.com> (hehk.github.io)",
+  "homepage": "https://github.com/Hehk/reason-react-context",
+  "repository": "https://github.com/Hehk/reason-react-context",
+  "bugs": {
+    "url": "https://github.com/Hehk/reason-react-context/issues"
+  },
   "license": "MIT",
   "devDependencies": {
     "@glennsl/bs-jest": "^0.4.2",
