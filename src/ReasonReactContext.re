@@ -28,7 +28,7 @@ module CreateContext = (C: Config) => {
         updateState(value);
         ReasonReact.NoUpdate;
       },
-      render: _self => ReasonReact.arrayToElement(children)
+      render: _self => <RenderChildren> ...children </RenderChildren>
     };
   };
   module Consumer = {
