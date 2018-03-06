@@ -1,5 +1,18 @@
 module type Config = {type state; let name: string; let defaultValue: state;};
 
+/* This allows for children pass through without coupling to the DOM with ReasonReact.createDomElement */
+module RenderChildren = {
+  let passThrough: ReasonReact.reactClass = [%bs.raw
+    {| props => props.children |}
+  ];
+  let make = children =>
+    ReasonReact.wrapJsForReason(
+      ~reactClass=passThrough,
+      ~props=Js.Obj.empty(),
+      children
+    );
+};
+
 module CreateContext = (C: Config) => {
   type action =
     | ChangeState(C.state);
@@ -28,7 +41,7 @@ module CreateContext = (C: Config) => {
         updateState(value);
         ReasonReact.NoUpdate;
       },
-      render: _self => ReasonReact.arrayToElement(children)
+      render: _self => <RenderChildren> ...children </RenderChildren>
     };
   };
   module Consumer = {
