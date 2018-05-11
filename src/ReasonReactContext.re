@@ -9,7 +9,7 @@ module RenderChildren = {
     ReasonReact.wrapJsForReason(
       ~reactClass=passThrough,
       ~props=Js.Obj.empty(),
-      children
+      children,
     );
 };
 
@@ -24,7 +24,7 @@ module CreateContext = (C: Config) => {
   };
   let updateState = newStateOpt => {
     let newState =
-      switch newStateOpt {
+      switch (newStateOpt) {
       | None => C.defaultValue
       | Some(newValue) => newValue
       };
@@ -41,7 +41,7 @@ module CreateContext = (C: Config) => {
         updateState(value);
         ReasonReact.NoUpdate;
       },
-      render: _self => <RenderChildren> ...children </RenderChildren>
+      render: _self => <RenderChildren> ...children </RenderChildren>,
     };
   };
   module Consumer = {
@@ -50,16 +50,86 @@ module CreateContext = (C: Config) => {
       ...component,
       initialState: () => state^,
       reducer: (action, _state) =>
-        switch action {
+        switch (action) {
         | ChangeState(newState) => ReasonReact.Update(newState)
         },
       subscriptions: ({send}) => [
         Sub(
           () => addSubscription(newState => send(ChangeState(newState))),
-          unSub => unSub()
-        )
+          unSub => unSub(),
+        ),
       ],
-      render: ({state}) => children(state)
+      render: ({state}) => children(state),
+    };
+  };
+};
+
+module type ConfigWithAction = {
+  type state;
+  type action;
+  let name: string;
+  let defaultValue: state;
+};
+
+module CreateContextWithSendConsumption = (C: ConfigWithAction) => {
+  type action =
+    | ChangeState(C.state);
+  let state = ref(C.defaultValue);
+  let subscriptions = ref([]);
+  let addSubscription = f => {
+    subscriptions := [f, ...subscriptions^];
+    () => subscriptions := List.filter(sub => sub !== f, subscriptions^);
+  };
+  let updateState = newStateOpt => {
+    let newState =
+      switch (newStateOpt) {
+      | None => C.defaultValue
+      | Some(newValue) => newValue
+      };
+    state := newState;
+    List.iter(f => f(newState), subscriptions^);
+  };
+  let containerSend = ref(None);
+  let setContainerSend = (send: option(C.action => unit)) =>
+    containerSend := send;
+  module Provider = {
+    let component =
+      ReasonReact.statelessComponent(C.name ++ "ContextProvider");
+    let make = (~value=?, ~send: C.action => unit, children) => {
+      ...component,
+      willReceiveProps: _self => {
+        setContainerSend(Some(send));
+        updateState(value);
+      },
+      didMount: _self => {
+        setContainerSend(Some(send));
+        updateState(value);
+        ReasonReact.NoUpdate;
+      },
+      render: _self => <RenderChildren> ...children </RenderChildren>,
+    };
+  };
+  module Consumer = {
+    let component =
+      ReasonReact.reducerComponent(C.name ++ "ContextConsumerWithSelf");
+    let make = children => {
+      ...component,
+      initialState: () => state^,
+      reducer: (action, _state) =>
+        switch (action) {
+        | ChangeState(newState) => ReasonReact.Update(newState)
+        },
+      subscriptions: ({send}) => [
+        Sub(
+          () => addSubscription(newState => send(ChangeState(newState))),
+          unSub => unSub(),
+        ),
+      ],
+      render: ({state}) =>
+        switch (containerSend^) {
+        | Some(send) => children(state, send)
+        | None => ReasonReact.nullElement
+        },
     };
   };
 };

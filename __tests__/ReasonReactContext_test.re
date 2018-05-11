@@ -12,7 +12,7 @@ describe("Creating and updating", () => {
         type state = counterState;
         let name = "Counter";
         let defaultValue = {count: 0};
-      }
+      },
     );
   test("Provider renders", () =>
     <Context.Provider />
@@ -46,5 +46,60 @@ describe("Creating and updating", () => {
   test("Consumer unmounts and the context clears the subscription", () => {
     let _ = consumer |> Enzyme.unmount;
     Context.subscriptions^ |> List.length |> expect |> toBe(0);
+  });
+});
+
+describe("Send consumption", () => {
+  open Expect;
+  module C = {
+    type state = counterState;
+    type action =
+      | SetCount(int);
+    let name = "Counter";
+    let defaultValue = {count: (-1)};
+  };
+  module ContextWithSend =
+    ReasonReactContext.CreateContextWithSendConsumption(C);
+  let state = ref({count: (-1)});
+  let send = (action: C.action) =>
+    state :=
+      (
+        switch (action) {
+        | SetCount(c) => {count: c}
+        }
+      );
+  test("Provider renders", () =>
+    <ContextWithSend.Provider send />
+    |> Enzyme.shallow
+    |> Enzyme.exists
+    |> expect
+    |> toBe(true)
+  );
+  let receivedCount = ref(-2);
+  let consumer =
+    <ContextWithSend.Consumer>
+      ...(
+           ({count}, send) => {
+             receivedCount := count;
+             send(SetCount(0));
+             ReasonReact.stringToElement("test");
+           }
+         )
+    </ContextWithSend.Consumer>
+    |> Enzyme.shallow;
+  test("Consumer renders ", () =>
+    consumer |> Enzyme.exists |> expect |> toBe(true)
+  );
+  test("Consumer received the right state", () =>
+    receivedCount^ |> expect |> toBe(-1)
+  );
+  test("send works", () =>
+    state^.count |> expect |> toBe(0)
+  );
+  test("sending new count is mirrored in consumer", () => {
+    let newValue = 10;
+    send(SetCount(newValue));
+    let _ = <ContextWithSend.Provider send value=state^ /> |> Enzyme.shallow;
+    receivedCount^ |> expect |> toBe(newValue);
   });
 });

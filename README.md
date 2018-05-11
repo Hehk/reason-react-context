@@ -82,3 +82,50 @@ let make = children => {
     </Theme.Context.Consumer>
 };
 ```
+
+## Passing send to the consumers (for deeply nested components):
+
+[The full example](https://gist.github.com/yalkheder/f50130852625851a5ec36dd8fb8c0065)
+
+Creating a context:
+
+```re
+type s = {count: int};
+
+type a =
+  | Inc
+  | Dec;
+
+module Context =
+  ReasonReactContext.CreateContextWithSendConsumption(
+    {
+      type state = s;
+      type action = a;
+      let name = "Counter";
+      let defaultValue = {count: 0};
+    },
+  );
+```
+
+The Provider & The Consumer:
+
+```re
+  render: ({state, send}) =>
+    <div>
+      <Counter.Context.Provider send value=state.counter>
+          <Counter.Context.Consumer>
+            ...(
+                (_state, send) =>
+                  <div>
+                    <button onClick=(_e => send(Counter.Inc))>
+                      ("inc" |> ReasonReact.stringToElement)
+                    </button>
+                    <button onClick=(_e => send(Counter.Dec))>
+                      ("dec" |> ReasonReact.stringToElement)
+                    </button>
+                  </div>
+              )
+          </Counter.Context.Consumer>
+      </Counter.Context.Provider>
+    </div>
+```
