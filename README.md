@@ -83,7 +83,7 @@ let make = children => {
 };
 ```
 
-Passing send to the consumers (for deeply nested components):
+## Passing send to the consumers (for deeply nested components):
 
 [The full example](https://gist.github.com/yalkheder/f50130852625851a5ec36dd8fb8c0065)
 
