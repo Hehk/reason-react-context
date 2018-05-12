@@ -9,7 +9,7 @@ module RenderChildren = {
     ReasonReact.wrapJsForReason(
       ~reactClass=passThrough,
       ~props=Js.Obj.empty(),
-      children
+      children,
     );
 };
 
@@ -24,7 +24,7 @@ module CreateContext = (C: Config) => {
   };
   let updateState = newStateOpt => {
     let newState =
-      switch newStateOpt {
+      switch (newStateOpt) {
       | None => C.defaultValue
       | Some(newValue) => newValue
       };
@@ -39,9 +39,9 @@ module CreateContext = (C: Config) => {
       willReceiveProps: _self => updateState(value),
       didMount: _self => {
         updateState(value);
-        ReasonReact.NoUpdate;
+        ();
       },
-      render: _self => <RenderChildren> ...children </RenderChildren>
+      render: _self => <RenderChildren> ...children </RenderChildren>,
     };
   };
   module Consumer = {
@@ -50,16 +50,16 @@ module CreateContext = (C: Config) => {
       ...component,
       initialState: () => state^,
       reducer: (action, _state) =>
-        switch action {
+        switch (action) {
         | ChangeState(newState) => ReasonReact.Update(newState)
         },
       subscriptions: ({send}) => [
         Sub(
           () => addSubscription(newState => send(ChangeState(newState))),
-          unSub => unSub()
-        )
+          unSub => unSub(),
+        ),
       ],
-      render: ({state}) => children(state)
+      render: ({state}) => children(state),
     };
   };
 };

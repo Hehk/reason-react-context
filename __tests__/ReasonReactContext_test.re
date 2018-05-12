@@ -12,7 +12,7 @@ describe("Creating and updating", () => {
         type state = counterState;
         let name = "Counter";
         let defaultValue = {count: 0};
-      }
+      },
     );
   test("Provider renders", () =>
     <Context.Provider />
@@ -27,7 +27,7 @@ describe("Creating and updating", () => {
       ...(
            ({count}) => {
              consumerCount := count;
-             ReasonReact.stringToElement("test");
+             ReasonReact.string("test");
            }
          )
     </Context.Consumer>
