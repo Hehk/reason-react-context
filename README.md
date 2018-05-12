@@ -12,8 +12,6 @@ npm install --save reason-react-context
 
 # Example
 
-An example of using this is at https://github.com/Hehk/example-reason-react-context
-
 Creating a context:
 
 ```re
@@ -82,3 +80,5 @@ let make = children => {
     </Theme.Context.Consumer>
 };
 ```
+
+If you want to see more there is a full theme example and a global state example in the /example folder of this repo.
