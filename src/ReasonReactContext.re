@@ -17,10 +17,10 @@ module CreateContext = (C: Config) => {
   type action =
     | ChangeState(C.state);
   let state = ref(C.defaultValue);
-  let subscriptions = ref([]);
+  let subscriptions = ref([||]);
   let addSubscription = f => {
-    subscriptions := [f, ...subscriptions^];
-    () => subscriptions := List.filter(sub => sub !== f, subscriptions^);
+    subscriptions := Js.Array.concat([|f|], subscriptions^);
+    () => subscriptions := Js.Array.filter(sub => sub !== f, subscriptions^);
   };
   let updateState = newStateOpt => {
     let newState =
@@ -29,7 +29,7 @@ module CreateContext = (C: Config) => {
       | Some(newValue) => newValue
       };
     state := newState;
-    List.iter(f => f(newState), subscriptions^);
+    Js.Array.forEach(f => f(newState), subscriptions^);
   };
   module Provider = {
     let component =
@@ -53,12 +53,10 @@ module CreateContext = (C: Config) => {
         switch (action) {
         | ChangeState(newState) => ReasonReact.Update(newState)
         },
-      subscriptions: ({send}) => [
-        Sub(
-          () => addSubscription(newState => send(ChangeState(newState))),
-          unSub => unSub(),
-        ),
-      ],
+      didMount: ({send, onUnmount}) =>
+        (newState => send(ChangeState(newState)))
+        |> addSubscription
+        |> onUnmount,
       render: ({state}) => children(state),
     };
   };

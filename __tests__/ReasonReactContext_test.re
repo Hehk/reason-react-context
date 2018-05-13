@@ -41,10 +41,10 @@ describe("Creating and updating", () => {
     consumerCount^ |> expect |> toBe(newValue);
   });
   test("context subscription count should only be 1", () =>
-    Context.subscriptions^ |> List.length |> expect |> toBe(1)
+    Context.subscriptions^ |> Js.Array.length |> expect |> toBe(1)
   );
   test("Consumer unmounts and the context clears the subscription", () => {
     let _ = consumer |> Enzyme.unmount;
-    Context.subscriptions^ |> List.length |> expect |> toBe(0);
+    Context.subscriptions^ |> Js.Array.length |> expect |> toBe(0);
   });
 });

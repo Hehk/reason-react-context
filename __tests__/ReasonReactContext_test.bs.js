@@ -2,7 +2,6 @@
 "use strict";
 
 var Jest = require("@glennsl/bs-jest/src/jest.js");
-var List = require("bs-platform/lib/js/list.js");
 var Curry = require("bs-platform/lib/js/curry.js");
 var Enzyme = require("bs-enzyme/src/Enzyme.js");
 var Enzyme$1 = require("enzyme");
@@ -77,9 +76,7 @@ describe("Creating and updating", function() {
   Jest.test("context subscription count should only be 1", function() {
     return Jest.Expect[/* toBe */ 2](
       1,
-      Jest.Expect[/* expect */ 0](
-        List.length(Context[/* subscriptions */ 1][0])
-      )
+      Jest.Expect[/* expect */ 0](Context[/* subscriptions */ 1][0].length)
     );
   });
   return Jest.test(
@@ -88,9 +85,7 @@ describe("Creating and updating", function() {
       consumer.unmount();
       return Jest.Expect[/* toBe */ 2](
         0,
-        Jest.Expect[/* expect */ 0](
-          List.length(Context[/* subscriptions */ 1][0])
-        )
+        Jest.Expect[/* expect */ 0](Context[/* subscriptions */ 1][0].length)
       );
     }
   );
