@@ -1715,7 +1715,7 @@ readdirp@^2.0.0:
     readable-stream "^2.0.2"
     set-immediate-shim "^1.0.1"
 
-"reason-react-context@file:../../":
+reason-react-context@../..:
   version "0.2.0"
   dependencies:
     reason-react "^0.4.1"

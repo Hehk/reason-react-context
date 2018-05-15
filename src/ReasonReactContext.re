@@ -36,6 +36,7 @@ module CreateContext = (C: Config) => {
       ReasonReact.statelessComponent(C.name ++ "ContextProvider");
     let make = (~value=?, children) => {
       ...component,
+      shouldUpdate: _self => false,
       willReceiveProps: _self => updateState(value),
       didMount: _self => {
         updateState(value);

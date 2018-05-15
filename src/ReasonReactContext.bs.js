@@ -54,7 +54,9 @@ function CreateContext(C) {
       /* didUpdate */ component[/* didUpdate */ 5],
       /* willUnmount */ component[/* willUnmount */ 6],
       /* willUpdate */ component[/* willUpdate */ 7],
-      /* shouldUpdate */ component[/* shouldUpdate */ 8],
+      /* shouldUpdate */ function() {
+        return false;
+      },
       /* render */ function() {
         return ReasonReact.element(/* None */ 0, /* None */ 0, make(children));
       },
