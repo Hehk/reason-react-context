@@ -5,19 +5,9 @@ var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 
-var passThrough = props => props.children;
-
-function make(children) {
-  return ReasonReact.wrapJsForReason(passThrough, {}, children);
-}
-
-var RenderChildren = /* module */ [
-  /* passThrough */ passThrough,
-  /* make */ make
-];
-
-function CreateContext(C) {
-  var state = [C[/* defaultValue */ 1]];
+function CreateContext(funarg) {
+  var passThrough = props => props.children;
+  var state = [funarg[/* value */ 1]];
   var subscriptions = [/* array */ []];
   var addSubscription = function(f) {
     subscriptions[0] = subscriptions[0].concat(/* array */ [f]);
@@ -29,7 +19,7 @@ function CreateContext(C) {
     };
   };
   var updateState = function(newStateOpt) {
-    var newState = newStateOpt ? newStateOpt[0] : C[/* defaultValue */ 1];
+    var newState = newStateOpt ? newStateOpt[0] : funarg[/* value */ 1];
     state[0] = newState;
     subscriptions[0].forEach(function(f) {
       return Curry._1(f, newState);
@@ -37,9 +27,9 @@ function CreateContext(C) {
     return /* () */ 0;
   };
   var component = ReasonReact.statelessComponent(
-    C[/* name */ 0] + "ContextProvider"
+    funarg[/* debugName */ 0] + "ContextProvider"
   );
-  var make$1 = function(value, children) {
+  var make = function(value, children) {
     return /* record */ [
       /* debugName */ component[/* debugName */ 0],
       /* reactClassInternal */ component[/* reactClassInternal */ 1],
@@ -58,7 +48,11 @@ function CreateContext(C) {
         return false;
       },
       /* render */ function() {
-        return ReasonReact.element(/* None */ 0, /* None */ 0, make(children));
+        return ReasonReact.element(
+          /* None */ 0,
+          /* None */ 0,
+          ReasonReact.wrapJsForReason(passThrough, {}, children)
+        );
       },
       /* initialState */ component[/* initialState */ 10],
       /* retainedProps */ component[/* retainedProps */ 11],
@@ -67,11 +61,10 @@ function CreateContext(C) {
       /* jsElementWrapped */ component[/* jsElementWrapped */ 14]
     ];
   };
-  var Provider = /* module */ [/* component */ component, /* make */ make$1];
   var component$1 = ReasonReact.reducerComponent(
-    C[/* name */ 0] + "ContextConsumer"
+    funarg[/* debugName */ 0] + "ContextConsumer"
   );
-  var make$2 = function(children) {
+  var make$1 = function(children) {
     return /* record */ [
       /* debugName */ component$1[/* debugName */ 0],
       /* reactClassInternal */ component$1[/* reactClassInternal */ 1],
@@ -104,17 +97,8 @@ function CreateContext(C) {
       /* jsElementWrapped */ component$1[/* jsElementWrapped */ 14]
     ];
   };
-  var Consumer = /* module */ [/* component */ component$1, /* make */ make$2];
-  return /* module */ [
-    /* state */ state,
-    /* subscriptions */ subscriptions,
-    /* addSubscription */ addSubscription,
-    /* updateState */ updateState,
-    /* Provider */ Provider,
-    /* Consumer */ Consumer
-  ];
+  return [subscriptions, [make], [make$1]];
 }
 
-exports.RenderChildren = RenderChildren;
 exports.CreateContext = CreateContext;
-/* passThrough Not a pure module */
+/* ReasonReact Not a pure module */

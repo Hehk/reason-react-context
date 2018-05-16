@@ -1,22 +1,18 @@
-module type Config = {type state; let name: string; let defaultValue: state;};
-
-/* This allows for children pass through without coupling to the DOM with ReasonReact.createDomElement */
-module RenderChildren = {
-  let passThrough: ReasonReact.reactClass = [%bs.raw
-    {| props => props.children |}
-  ];
-  let make = children =>
-    ReasonReact.wrapJsForReason(
-      ~reactClass=passThrough,
-      ~props=Js.Obj.empty(),
-      children,
-    );
+module type ContextConfig = {
+  let debugName: string;
+  /* the type of data in this context */
+  type t;
+  /* The current value of the context */
+  let value: t;
 };
 
-module CreateContext = (C: Config) => {
+module CreateContext = (C: ContextConfig) => {
+  /* This allows for children to be passed through, ReasonReact.createDomElement cannot be */
+  /* used because it couples to the dom and breaks react native */
+  let passThrough = [%bs.raw {| props => props.children |}];
   type action =
-    | ChangeState(C.state);
-  let state = ref(C.defaultValue);
+    | ChangeState(C.t);
+  let state = ref(C.value);
   let subscriptions = ref([||]);
   let addSubscription = f => {
     subscriptions := Js.Array.concat([|f|], subscriptions^);
@@ -25,7 +21,7 @@ module CreateContext = (C: Config) => {
   let updateState = newStateOpt => {
     let newState =
       switch (newStateOpt) {
-      | None => C.defaultValue
+      | None => C.value
       | Some(newValue) => newValue
       };
     state := newState;
@@ -33,7 +29,7 @@ module CreateContext = (C: Config) => {
   };
   module Provider = {
     let component =
-      ReasonReact.statelessComponent(C.name ++ "ContextProvider");
+      ReasonReact.statelessComponent(C.debugName ++ "ContextProvider");
     let make = (~value=?, children) => {
       ...component,
       shouldUpdate: _self => false,
@@ -42,11 +38,19 @@ module CreateContext = (C: Config) => {
         updateState(value);
         ();
       },
-      render: _self => <RenderChildren> ...children </RenderChildren>,
+      render: _self =>
+        ReasonReact.element(
+          ReasonReact.wrapJsForReason(
+            ~reactClass=passThrough,
+            ~props=Js.Obj.empty(),
+            children,
+          ),
+        ),
     };
   };
   module Consumer = {
-    let component = ReasonReact.reducerComponent(C.name ++ "ContextConsumer");
+    let component =
+      ReasonReact.reducerComponent(C.debugName ++ "ContextConsumer");
     let make = children => {
       ...component,
       initialState: () => state^,

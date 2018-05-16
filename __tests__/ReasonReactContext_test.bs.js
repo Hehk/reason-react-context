@@ -14,8 +14,8 @@ Enzyme.configureEnzyme(new EnzymeAdapterReact());
 describe("Creating and updating", function() {
   var Context = ReasonReactContext.CreateContext(
     /* module */ [
-      /* name */ "Counter",
-      /* defaultValue : record */ [/* count */ 0]
+      /* debugName */ "Counter",
+      /* value : record */ [/* count */ 0]
     ]
   );
   Jest.test("Provider renders", function() {
@@ -27,7 +27,7 @@ describe("Creating and updating", function() {
             /* None */ 0,
             /* None */ 0,
             Curry._2(
-              Context[/* Provider */ 4][/* make */ 1],
+              Context[/* Provider */ 1][/* make */ 0],
               /* None */ 0,
               /* array */ []
             )
@@ -41,7 +41,7 @@ describe("Creating and updating", function() {
     ReasonReact.element(
       /* None */ 0,
       /* None */ 0,
-      Curry._1(Context[/* Consumer */ 5][/* make */ 1], function(param) {
+      Curry._1(Context[/* Consumer */ 2][/* make */ 0], function(param) {
         consumerCount[0] = param[/* count */ 0];
         return "test";
       })
@@ -61,7 +61,7 @@ describe("Creating and updating", function() {
           /* None */ 0,
           /* None */ 0,
           Curry._2(
-            Context[/* Provider */ 4][/* make */ 1],
+            Context[/* Provider */ 1][/* make */ 0],
             /* Some */ [/* record */ [/* count */ 10]],
             /* array */ []
           )
@@ -76,7 +76,7 @@ describe("Creating and updating", function() {
   Jest.test("context subscription count should only be 1", function() {
     return Jest.Expect[/* toBe */ 2](
       1,
-      Jest.Expect[/* expect */ 0](Context[/* subscriptions */ 1][0].length)
+      Jest.Expect[/* expect */ 0](Context[/* subscriptions */ 0][0].length)
     );
   });
   return Jest.test(
@@ -85,7 +85,7 @@ describe("Creating and updating", function() {
       consumer.unmount();
       return Jest.Expect[/* toBe */ 2](
         0,
-        Jest.Expect[/* expect */ 0](Context[/* subscriptions */ 1][0].length)
+        Jest.Expect[/* expect */ 0](Context[/* subscriptions */ 0][0].length)
       );
     }
   );

@@ -24,9 +24,9 @@ let initialState = () => {todos: [], input: ""};
 module Context =
   ReasonReactContext.CreateContext(
     {
-      type state = value;
-      let name = "GlobalState";
-      let defaultValue = {
+      type t = value;
+      let debugName = "GlobalState";
+      let value = {
         send: _action => Js.log("State has not mounted yet"),
         state: initialState(),
       };

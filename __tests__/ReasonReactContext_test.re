@@ -9,9 +9,9 @@ describe("Creating and updating", () => {
   module Context =
     ReasonReactContext.CreateContext(
       {
-        type state = counterState;
-        let name = "Counter";
-        let defaultValue = {count: 0};
+        type t = counterState;
+        let debugName = "Counter";
+        let value = {count: 0};
       },
     );
   test("Provider renders", () =>

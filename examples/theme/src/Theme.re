@@ -1,12 +1,12 @@
-type t =
+type themes =
   | Light
   | Dark;
 
 module Context =
   ReasonReactContext.CreateContext(
     {
-      type state = t;
-      let name = "Theme";
-      let defaultValue = Light;
+      type t = themes;
+      let debugName = "Theme";
+      let value = Light;
     },
   );
